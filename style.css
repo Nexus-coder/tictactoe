@@ -1,0 +1,133 @@
+:root{
+
+}
+
+
+/* border box model: https://css-tricks.com/box-sizing/ */
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body {
+
+    margin: 0;
+    padding: 0;
+    display:grid;
+    place-items: center;
+    height: 100vh;
+    background-color:var(--input-color);
+    font-family: 'Agdasima', sans-serif;
+    overflow: hidden;
+}
+body[data-state='brown']{
+    transition: 2s;
+    --fill-color:#FEFAE0;
+    --stroke-color:#DDA15E;
+    --input-color:#BC6C25;
+    --hover-color: #606c38;
+}
+
+body[data-state='pink']{
+    transition: 2s;
+    --fill-color:#BDE0FE;
+    --stroke-color:#A2D2FF;
+    --input-color:#FFAFCC;
+    --hover-color: #82bdf4;
+}
+
+body[data-state='blue']{
+    transition: 2s;
+    --fill-color:#0077B6;
+    --stroke-color:#023E8A;
+    --input-color:#03045E;
+    --hover-color: #4383d8;
+}
+/* Styling for the grid Table */
+.grid {
+    display:grid;
+    place-self: center;
+    grid-template-columns: 100px 100px 100px;
+    grid-template-rows: 100px 100px 100px;
+    gap: 1px;
+    animation-name: slide-up;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+
+}
+
+.grid-box {
+    background-color:var(--fill-color);
+    border: 3px solid var(--stroke-color);
+    display: grid;
+    place-items: center;
+
+}
+
+.grid-box:hover {
+    background-color: var(--hover-color);
+}
+/* Styling result section */
+.results{
+    display: grid;
+    place-items: center;
+    background-color: var(--hover-color);
+    color:var(--fill-color);
+    width: 240px;
+    height: 65px;
+    font-size: 36px;
+  
+}
+/* 
+Styling scores section */
+.table{
+    display: grid;
+    grid-template-rows: 35px 35px 35px;
+    grid-template-columns:255px;
+    background-color: var(--fill-color);
+    animation-name: slide-up;
+    animation-duration: 2s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+}
+.tacScore,.ticScore{
+    display:flex;
+}
+
+.data{
+    display:grid;
+    place-items:center;
+    flex-basis:calc(255px / 5);
+    border:1px solid var(--stroke-color);
+    color:var(--input-color);
+    font-size:30px;
+    font-weight: 700;
+}
+
+.score{
+    display:grid;
+    place-items:center;
+    border:1px solid var(--stroke-color);
+    color:var(--input-color);
+    font-size:30px;
+    font-weight: 700;
+}
+
+@keyframes slide-up{
+    from{
+        transform: translateY(100%);
+        opacity:0;
+    }
+    50%{
+        opactiy:1;
+    }
+    to{
+        transform: 0;
+    }
+}
