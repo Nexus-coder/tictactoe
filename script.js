@@ -1,5 +1,6 @@
 //Needed values
 //Everytime a game is starte count is re-initialized to zero,So is detWin
+var toeTurn = false;
 let count = 0;
 let detWin = [];
 let remainNum = [];
@@ -70,28 +71,24 @@ function determineWinner(index) {
 };
 
 //Function to add svg to boxes
-function instance() {
-    let flag = false;
-    function ElementToBox(e) {
-        console.log(flag)
-        flag = !flag;
-        let input = flag ? toe : tic
+function add(e) {
+        let input = toeTurn ? toe : tic;
+
         e.target.innerHTML = input;
+
+        toeTurn = !toeTurn;
         // detWin[index] = input;
         // indexPresent.push(index);
-    }
-    return ElementToBox;
 }
 //Add in the global context the flag is always false
-let Add = instance();
 
 //This is the 
 function tictacLog() {
     [...gridBoxes].forEach((gridBox, index) => {
         gridBox.addEventListener("click", function(e) {
-            console.dir(gridBox);
-            Add(e)
-            console.dir(Add)
+            //console.dir(gridBox);
+            add(e)
+            //console.dir(Add)
             //Here the number of grids let is displayed assumming that the active player is O;
             remainNum = possNum.filter(num => !indexPresent.includes(num));
             console.log(remainNum);
