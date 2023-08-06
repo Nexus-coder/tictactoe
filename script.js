@@ -29,7 +29,7 @@ let tic = `<svg xmlns="http://www.w3.org/2000/svg" width="53" height="54" viewBo
 </svg>`;
 let toe = `<svg xmlns="http://www.w3.org/2000/svg" width="67" height="67" viewBox="0 0 67 67" fill="none">
 <circle cx="33.25" cy="33.25" r="30.75" stroke="#BC6C25" stroke-width="5"/>
-</svg>`
+</svg>`;
 
 let machine = {
     initial: 'brown',
