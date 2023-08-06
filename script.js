@@ -1,5 +1,6 @@
 //Needed values
 //Everytime a game is starte count is re-initialized to zero,So is detWin
+var toeTurn = false;
 let count = 0;
 let detWin = [];
 let remainNum = [];
@@ -12,24 +13,23 @@ let zeroToe = document.querySelector('.zero');
 let results = document.querySelector('.results');
 let body = document.querySelector('.body');
 let change = document.querySelector('.change');
-console.log(body.dataset.state);
+var tacWins = 0;
+var ticWins = 0;
+
+//grid array
 const gridTableDetWin = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-]
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+];
+
 let tic = `<svg xmlns="http://www.w3.org/2000/svg" width="53" height="54" viewBox="0 0 53 54" fill="none">
 <path d="M50 3L3 50" stroke="#BC6C25" stroke-width="5" stroke-linecap="round"/>
 <path d="M49.4491 50.5446L2.99999 3.00004" stroke="#BC6C25" stroke-width="5" stroke-linecap="round"/>
 </svg>`;
 let toe = `<svg xmlns="http://www.w3.org/2000/svg" width="67" height="67" viewBox="0 0 67 67" fill="none">
 <circle cx="33.25" cy="33.25" r="30.75" stroke="#BC6C25" stroke-width="5"/>
-</svg>`
+</svg>`;
 
 let machine = {
     initial: 'brown',
@@ -53,56 +53,140 @@ change.addEventListener('click', () => {
     let currentState = body.dataset.state;
     let nextState = machine.state[currentState].on['CLICK'];
     body.dataset.state = nextState;
-    console.log(44);
 })
 
-//Function to determine winner
-function determineWinner(index) {
-    //Check i a winner has already been found
-    gridTableDetWin.forEach(([num1, num2, num3]) => {
-        if (((detWin[num1] === "X")) && ((detWin[num2] === "X")) && ((detWin[num3] === "X")) || ((detWin[num1] === "O")) && ((detWin[num2] === "O")) && ((detWin[num3] === "O"))) {
-            results.innerHTML = `Winner ${detWin[index]}!!`;
-            hitSound.play();
-            flag = true;
+
+//checks if next move is possible
+function checkAmove() {
+    var move;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (gridTableDetWin[i][j] === 0) {
+                move = true;
+                break;
+            }
         }
-    })
+    }
+
+    return move;
+}
+
+//Function to determine winner
+function checkRows() {
+    var win = false;
+    //check filled rows
+    for (let row = 0; row < 3; row++) {
+        if ((gridTableDetWin[row][0] === gridTableDetWin[row][1]) &&
+         (gridTableDetWin[row][0] === gridTableDetWin[row][2])) {
+            if (gridTableDetWin[row][0] != 0) {
+                win = true;
+            }
+        }
+    }
+
+    return win;
 
 };
 
-//Function to add svg to boxes
-function instance() {
-    let flag = false;
-    function ElementToBox(e) {
-        console.log(flag)
-        flag = !flag;
-        let input = flag ? toe : tic
-        e.target.innerHTML = input;
-        // detWin[index] = input;
-        // indexPresent.push(index);
-    }
-    return ElementToBox;
-}
-//Add in the global context the flag is always false
-let Add = instance();
 
-//This is the 
-function tictacLog() {
-    [...gridBoxes].forEach((gridBox, index) => {
-        gridBox.addEventListener("click", function(e) {
-            console.dir(gridBox);
-            Add(e)
-            console.dir(Add)
-            //Here the number of grids let is displayed assumming that the active player is O;
-            remainNum = possNum.filter(num => !indexPresent.includes(num));
-            console.log(remainNum);
-            if (remainNum.length == 0) {
-                results.innerHTML = `Draw`;
+function checkCols() {
+    var win = false;
+    //check filled cols
+    for (let col = 0; col < 3; col++) {
+        if ((gridTableDetWin[0][col] === gridTableDetWin[1][col]) && 
+        (gridTableDetWin[0][col] === gridTableDetWin[2][col])) {
+
+            if (gridTableDetWin[0][col] != 0) {
+                console.log((gridTableDetWin[0][col] === gridTableDetWin[1][col]) 
+                && (gridTableDetWin[0][col] === gridTableDetWin[2][col]));
+                win = true;
             }
+        }
+    }
+
+    return win;
+
+};
 
 
-            putSound.play()
-            //Once winner has been decided break out o the loop
-            determineWinner(index);
+function checkWin() {
+    // return Sum of all conditions
+    return checkRows() || checkCols() || checkDiagonals();
+}
+
+
+function checkDiagonals() {
+    /*
+    *two possible conditions for 
+    *one two win through the diagonals
+    */
+    var diag1 = ((gridTableDetWin[0][0] === gridTableDetWin[1][1]) && (gridTableDetWin[0][0] == gridTableDetWin[2][2])) && gridTableDetWin[0][0] != 0;
+    var diag2 = ((gridTableDetWin[0][2] === gridTableDetWin[1][1]) && (gridTableDetWin[0][2] == gridTableDetWin[2][0])) && gridTableDetWin[0][2] != 0;
+
+    return diag1 || diag2;
+
+}
+
+//Function to add svg to boxes
+function add(e, { row, col }) {
+
+    //console.log("workin");
+
+    var input;
+    //2 for toe & 1 for tic
+    if (toeTurn) {
+        input = toe;
+        gridTableDetWin[row][col] = 2;
+    } else {
+        input = tic;
+        gridTableDetWin[row][col] = 1;
+    }
+
+    //append icon
+    e.target.innerHTML = input;
+
+    //change who's next
+    toeTurn = !toeTurn;
+
+    //check if next move is possible
+    if (!checkAmove()) {
+        reset();
+        results.innerText = "Draw";
+    }
+}
+
+//to add event listener on boxes
+function tictacLog() {
+    [...gridBoxes].forEach((gridBox) => {
+        gridBox.addEventListener("click", function (e) {
+
+            //valid move
+            if (e.target.innerHTML === "") {
+                add(e, {
+                    row: parseInt(e.target.dataset.row),
+                    col: parseInt(e.target.dataset.col)
+                });
+
+                //check if there's a win
+                var win = checkWin();
+
+                if (win) {
+                    reset();
+                    //check who won
+                    if (toeTurn) {
+                        results.innerText = ("tic wins");
+                        ticWins++;
+                    } else {
+                        results.innerText = ("tac wins");
+                        tacWins++;
+                    }
+
+                    document.querySelector("#datax1").innerText = ticWins;
+                    document.querySelector("#data01").innerText = tacWins;
+                }
+
+                putSound.play();
+            }
 
         })
     });
@@ -112,12 +196,19 @@ let putSound = new Audio('C:/Users/hp/Desktop/Dev/Games/XandOgame/mixkit-game-ba
 let hitSound = new Audio('C:/Users/hp/Desktop/Dev/Games/XandOgame/mixkit-ethereal-fairy-win-sound-2019.wav');
 
 function reset() {
-    [...gridBoxes].forEach((gridBox, index) => {
-        gridBox.innerHTML = "";
+    //reseting the array
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            gridTableDetWin[i][j] = 0;
+        }
+    }
+    //clear board
+    [...gridBoxes].forEach((box) => {
+        box.innerHTML = "";
     });
 }
 
-
+//adding event listeners to boxes
 tictacLog();
 
 // function random(num) {
