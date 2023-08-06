@@ -13,7 +13,6 @@ let zeroToe = document.querySelector('.zero');
 let results = document.querySelector('.results');
 let body = document.querySelector('.body');
 let change = document.querySelector('.change');
-var boardBoxes = document.querySelectorAll(".grid-box");
 var tacWins = 0;
 var ticWins = 0;
 
@@ -152,9 +151,9 @@ function add(e,{row,col}) {
 
 //to add event listener on boxes
 function tictacLog() {
-    [...gridBoxes].forEach((gridBox, index) => {
+    [...gridBoxes].forEach((gridBox) => {
         gridBox.addEventListener("click", function(e) {
-            //add icons
+            //add svg
             add(e,{
                 row : parseInt(e.target.dataset.row),
                 col : parseInt(e.target.dataset.col)
@@ -195,7 +194,7 @@ function reset() {
         }
     }
     //clear board
-    boardBoxes.forEach((box)=>{
+    [...gridBoxes].forEach((box)=>{
         box.innerHTML = " ";
     });
 }
