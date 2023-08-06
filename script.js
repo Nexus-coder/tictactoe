@@ -1,7 +1,6 @@
 //Needed values
 //Everytime a game is starte count is re-initialized to zero,So is detWin
 var toeTurn = false;
-var rounds = 0;
 let count = 0;
 let detWin = [];
 let remainNum = [];
@@ -18,7 +17,7 @@ var boardBoxes = document.querySelectorAll(".grid-box");
 var tacWins = 0;
 var ticWins = 0;
 
-//console.log(body.dataset.state);
+//grid array
 const gridTableDetWin = [
     [0, 0, 0],
     [0, 0, 0],
@@ -55,9 +54,10 @@ change.addEventListener('click', () => {
     let currentState = body.dataset.state;
     let nextState = machine.state[currentState].on['CLICK'];
     body.dataset.state = nextState;
-    //console.log(44);
 })
 
+
+//checks if next move is possible
 function checkAmove(){
     var move;
     for(let i = 0 ; i < 3 ;i++){
@@ -69,7 +69,7 @@ function checkAmove(){
         }
     }
 
-return move;
+    return move;
 }
 
 //Function to determine winner
@@ -91,7 +91,7 @@ var win = false;
 
 function checkCols() {
 var win =false;
-    //check filled rows
+    //check filled cols
     for(let col = 0 ; col < 3; col++){
         if((gridTableDetWin[0][col] === gridTableDetWin[1][col]) && (gridTableDetWin[0][col]=== gridTableDetWin[2][col])){
            
@@ -108,20 +108,19 @@ var win =false;
 
 
 function checkWin(){
+    // return Sum of all conditions
     return checkRows() || checkCols() || checkDiagonals();
 }
 
 
 function checkDiagonals(){
+    /*
+    *two possible conditions for 
+    *one two win through the diagonals
+    */
     var diag1 = ((gridTableDetWin[0][0] === gridTableDetWin[1][1]) && (gridTableDetWin[0][0] == gridTableDetWin[2][2])) && gridTableDetWin[0][0] != 0;
     var diag2 = ((gridTableDetWin[0][2] === gridTableDetWin[1][1]) && (gridTableDetWin[0][2] == gridTableDetWin[2][0])) && gridTableDetWin[0][2] != 0;
-    /*if(diag1 || diag2){
-        return true;
-    }else{
-        return false;
-    }*/
 
-    //console.log(diag1,diag2);
     return diag1 || diag2;
     
 }
@@ -129,6 +128,7 @@ function checkDiagonals(){
 //Function to add svg to boxes
 function add(e,{row,col}) {
     var input;
+    //2 for toe & 1 for tic
         if(toeTurn){
             input = toe;
             gridTableDetWin[row][col] = 2;
@@ -137,23 +137,20 @@ function add(e,{row,col}) {
             gridTableDetWin[row][col] = 1;
         }
 
-        console.log(gridTableDetWin);
+        //append icon
         e.target.innerHTML = input;
 
+        //change who's next
         toeTurn = !toeTurn;
-        rounds += 0.5;
 
+        //check if next move is possible
         if(!checkAmove()){
             reset();
             results.innerText = "Draw";
-        } 
-        //console.log(rounds);
-        // detWin[index] = input;
-        // indexPresent.push(index);
+        }
 }
-//Add in the global context the flag is always false
 
-//This is the 
+//to add event listener on boxes
 function tictacLog() {
     [...gridBoxes].forEach((gridBox, index) => {
         gridBox.addEventListener("click", function(e) {
@@ -203,7 +200,7 @@ function reset() {
     });
 }
 
-
+//adding event listeners to boxes
 tictacLog();
 
 // function random(num) {
