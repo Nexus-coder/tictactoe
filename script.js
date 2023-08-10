@@ -31,6 +31,11 @@ let toe = `<svg xmlns="http://www.w3.org/2000/svg" width="67" height="67" viewBo
 <circle cx="33.25" cy="33.25" r="30.75" stroke="#BC6C25" stroke-width="5"/>
 </svg>`
 
+let putSound = new Audio('C:/Users/hp/Desktop/Dev/Games/XandOgame/mixkit-game-ball-tap-2073.wav');
+let hitSound = new Audio('C:/Users/hp/Desktop/Dev/Games/XandOgame/mixkit-ethereal-fairy-win-sound-2019.wav');
+
+
+
 let machine = {
     initial: 'brown',
     state: {
@@ -59,6 +64,9 @@ change.addEventListener('click', () => {
 //Function to determine winner
 function determineWinner(index) {
     //Check i a winner has already been found
+    if (remainNum.length == 0) {
+        results.innerHTML = `Draw`;
+    }
     gridTableDetWin.forEach(([num1, num2, num3]) => {
         if (((detWin[num1] === "X")) && ((detWin[num2] === "X")) && ((detWin[num3] === "X")) || ((detWin[num1] === "O")) && ((detWin[num2] === "O")) && ((detWin[num3] === "O"))) {
             results.innerHTML = `Winner ${detWin[index]}!!`;
@@ -72,34 +80,24 @@ function determineWinner(index) {
 //Function to add svg to boxes
 function instance() {
     let flag = false;
-    function ElementToBox(e) {
-        console.log(flag)
+    function ElementToBox(e,index) {
         flag = !flag;
         let input = flag ? toe : tic
         e.target.innerHTML = input;
-        // detWin[index] = input;
-        // indexPresent.push(index);
+        detWin[index] = input === toe ? "O" : "X";
+        indexPresent.push(index);
     }
     return ElementToBox;
 }
 //Add in the global context the flag is always false
 let Add = instance();
-
-//This is the 
+//This is the actaul game logic
 function tictacLog() {
     [...gridBoxes].forEach((gridBox, index) => {
         gridBox.addEventListener("click", function(e) {
-            console.dir(gridBox);
-            Add(e)
-            console.dir(Add)
-            //Here the number of grids let is displayed assumming that the active player is O;
+            Add(e,index)
+            //Here the number of grids left is displayed assumming that the active player is O;
             remainNum = possNum.filter(num => !indexPresent.includes(num));
-            console.log(remainNum);
-            if (remainNum.length == 0) {
-                results.innerHTML = `Draw`;
-            }
-
-
             putSound.play()
             //Once winner has been decided break out o the loop
             determineWinner(index);
@@ -108,8 +106,6 @@ function tictacLog() {
     });
 }
 
-let putSound = new Audio('C:/Users/hp/Desktop/Dev/Games/XandOgame/mixkit-game-ball-tap-2073.wav');
-let hitSound = new Audio('C:/Users/hp/Desktop/Dev/Games/XandOgame/mixkit-ethereal-fairy-win-sound-2019.wav');
 
 function reset() {
     [...gridBoxes].forEach((gridBox, index) => {
